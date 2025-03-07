@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>John Patrick Lalo</h1>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-80 text-center">
+        <h2 class="text-2xl font-semibold mb-6">Sign In</h2>
+        <button id="googleSignIn" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+            Sign in with Google
+        </button>
+    </div>
+
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL2GL3UG58B3bGJAAhTU70HmsI0IrR45Y",
+            authDomain: "my-project-teamplanner.firebaseapp.com",
+            projectId: "my-project-teamplanner",
+            storageBucket: "my-project-teamplanner.appspot.app",
+            messagingSenderId: "610197294260",
+            appId: "1:610197294260:web:b0ab87c15e53d2c75f5be1",
+            measurementId: "G-582WE7178X"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        document.getElementById('googleSignIn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then(result => {
+                    console.log('User signed in:', result.user);
+                    window.location.href = 'home.html'; // Redirect to home page
+                })
+                .catch(error => {
+                    console.error('Error signing in:', error);
+                });
+        });
+    </script>
 </body>
 </html>
