@@ -3,32 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>TeamPlanner</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="flex items-center justify-center min-h-screen bg-gray-100">
+<body class="bg-gray-100 min-h-screen flex">
 
-    <div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
-        <h2 class="text-2xl font-semibold mb-4">Welcome</h2>
-        <img id="userImage" class="mx-auto rounded-full w-24 h-24 mb-4 hidden" alt="User Profile">
-        <p id="userName" class="text-lg font-medium"></p>
-        <p id="userEmail" class="text-sm text-gray-600 mb-4"></p>
-
-        <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+    <!-- Sidebar (User Profile) -->
+    <aside class="w-64 bg-white shadow-lg p-6">
+        <div class="flex items-center space-x-3">
+            <img id="userImage" class="w-12 h-12 rounded-full hidden" alt="User Profile">
+            <div>
+                <p id="userName" class="font-semibold"></p>
+                <p id="userEmail" class="text-sm text-gray-500"></p>
+            </div>
+        </div>
+        <button onclick="logout()" class="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
             Logout
         </button>
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+        <h1 class="text-3xl font-bold mb-4">Your Projects</h1>
+        
+        <!-- Add New Project -->
+        <div class="mb-4">
+            <input id="projectInput" type="text" placeholder="Enter project name..." 
+                class="w-80 p-2 border rounded-lg">
+            <button onclick="addProject()" class="bg-blue-500 text-white py-2 px-4 rounded-lg ml-2 hover:bg-blue-600">
+                Add Project
+            </button>
+        </div>
+
+        <!-- Project List -->
+        <div id="projectList" class="grid grid-cols-3 gap-4"></div>
+    </main>
 
     <script>
-        // Fetch user data from localStorage
+        // Load user session
         const user = JSON.parse(localStorage.getItem("user"));
-
         if (!user) {
-            // Redirect to login if user is not signed in
             window.location.href = "/";
         } else {
-            // Display user details
             document.getElementById("userImage").src = user.picture;
             document.getElementById("userImage").classList.remove("hidden");
             document.getElementById("userName").textContent = user.name;
@@ -37,10 +54,60 @@
 
         // Logout function
         function logout() {
-            localStorage.removeItem("user"); // Clear stored session
-            localStorage.removeItem("google_access_token"); // Remove token
-            window.location.href = "/"; // Redirect to login page
+            localStorage.removeItem("user");
+            localStorage.removeItem("google_access_token");
+            window.location.href = "/";
         }
+
+        // Load projects from localStorage
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const projectList = document.getElementById("projectList");
+            projectList.innerHTML = "";
+
+            projects.forEach((project, index) => {
+                const projectCard = document.createElement("div");
+                projectCard.className = "bg-white p-4 shadow-lg rounded-lg flex justify-between items-center";
+
+                const projectName = document.createElement("span");
+                projectName.textContent = project;
+                projectName.className = "font-semibold";
+
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.className = "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
+                removeBtn.onclick = () => removeProject(index);
+
+                projectCard.appendChild(projectName);
+                projectCard.appendChild(removeBtn);
+                projectList.appendChild(projectCard);
+            });
+        }
+
+        // Add a new project
+        function addProject() {
+            const projectInput = document.getElementById("projectInput");
+            const projectName = projectInput.value.trim();
+            if (!projectName) return alert("Please enter a project name!");
+
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            projects.push(projectName);
+            localStorage.setItem("projects", JSON.stringify(projects));
+
+            projectInput.value = "";
+            loadProjects();
+        }
+
+        // Remove a project
+        function removeProject(index) {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            projects.splice(index, 1);
+            localStorage.setItem("projects", JSON.stringify(projects));
+            loadProjects();
+        }
+
+        // Load projects on page load
+        loadProjects();
     </script>
 
 </body>
