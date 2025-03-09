@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeamPlanner</title>
+    <title>TeamPlanner - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -12,60 +12,24 @@
     <!-- Navbar -->
     <nav class="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
         <h1 class="text-xl font-bold">TeamPlanner</h1>
-
-        <!-- Desktop Navigation -->
-        <ul class="hidden md:flex space-x-6">
-            <li><a href="#" class="hover:underline">Home</a></li>
-            <li><a href="#" class="hover:underline">Tasks</a></li>
-            <li><a href="#" class="hover:underline">Settings</a></li>
-        </ul>
-
         <div class="flex items-center space-x-4">
-            <!-- Mobile Menu Button -->
-            <button id="menuBtn" class="md:hidden text-white text-2xl">&#9776;</button>
-
-            <!-- Profile Picture -->
-            <img id="userImage" class="w-10 h-10 rounded-full cursor-pointer shadow-lg hidden" 
-                alt="User Profile" onclick="toggleProfile()">
-
-            <!-- Profile Dropdown (Hidden by Default) -->
+            <img id="userImage" class="w-10 h-10 rounded-full cursor-pointer shadow-lg hidden" alt="User Profile" onclick="toggleProfile()">
             <div id="profileCard" class="hidden absolute top-14 right-4 bg-white shadow-lg p-4 rounded-lg w-48">
                 <p id="userName" class="font-semibold"></p>
                 <p id="userEmail" class="text-sm text-gray-500 mb-2"></p>
-                <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
-                    Logout
-                </button>
+                <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Navigation Menu -->
-    <ul id="mobileMenu" class="hidden md:hidden bg-blue-600 text-white text-center p-4">
-        <li><a href="#" class="block py-2 hover:underline">Home</a></li>
-        <li><a href="#" class="block py-2 hover:underline">Tasks</a></li>
-        <li><a href="#" class="block py-2 hover:underline">Settings</a></li>
-    </ul>
-
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <h2 class="text-3xl font-bold mb-4">Your Projects</h2>
-        
-        <!-- Add New Project -->
-        <div class="mb-4 flex flex-col sm:flex-row gap-2">
-            <input id="projectInput" type="text" placeholder="Enter project name..." 
-                class="w-full sm:w-80 p-2 border rounded-lg">
-            <button onclick="addProject()" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-                Add Project
-            </button>
-        </div>
-
-        <!-- Project List -->
         <div id="projectList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </main>
 
     <script>
-        // Load user session
-        const user = JSON.parse(localStorage.getItem("user"));
+        let user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
             window.location.href = "/";
         } else {
@@ -75,72 +39,46 @@
             document.getElementById("userEmail").textContent = user.email;
         }
 
-        // Toggle Profile Card Visibility
         function toggleProfile() {
             document.getElementById("profileCard").classList.toggle("hidden");
         }
 
-        // Toggle Mobile Menu
-        document.getElementById("menuBtn").addEventListener("click", () => {
-            document.getElementById("mobileMenu").classList.toggle("hidden");
-        });
-
-        // Logout function
         function logout() {
             localStorage.removeItem("user");
             localStorage.removeItem("google_access_token");
             window.location.href = "/";
         }
 
-        // Load projects from localStorage
-        function loadProjects() {
-            const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            const projectList = document.getElementById("projectList");
-            projectList.innerHTML = "";
+        async function loadUserProjects() {
+            try {
+                const response = await fetch(`/api/getUserProjects?email=${encodeURIComponent(user.email)}`);
+                const projects = await response.json();
 
-            projects.forEach((project, index) => {
-                const projectCard = document.createElement("div");
-                projectCard.className = "bg-white p-4 shadow-lg rounded-lg flex justify-between items-center";
+                const projectList = document.getElementById("projectList");
+                projectList.innerHTML = "";
 
-                const projectName = document.createElement("span");
-                projectName.textContent = project;
-                projectName.className = "font-semibold";
+                if (projects.length === 0) {
+                    projectList.innerHTML = "<p class='text-gray-500'>No projects found.</p>";
+                    return;
+                }
 
-                const removeBtn = document.createElement("button");
-                removeBtn.textContent = "Remove";
-                removeBtn.className = "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600";
-                removeBtn.onclick = () => removeProject(index);
+                projects.forEach(project => {
+                    const projectCard = document.createElement("div");
+                    projectCard.className = "bg-white p-4 shadow-lg rounded-lg";
 
-                projectCard.appendChild(projectName);
-                projectCard.appendChild(removeBtn);
-                projectList.appendChild(projectCard);
-            });
+                    projectCard.innerHTML = `
+                        <h3 class="text-lg font-semibold">${project.name}</h3>
+                        <p class="text-sm text-gray-500">Owner: ${project.owner}</p>
+                    `;
+
+                    projectList.appendChild(projectCard);
+                });
+            } catch (error) {
+                console.error("Error loading projects:", error);
+            }
         }
 
-        // Add a new project
-        function addProject() {
-            const projectInput = document.getElementById("projectInput");
-            const projectName = projectInput.value.trim();
-            if (!projectName) return alert("Please enter a project name!");
-
-            const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            projects.push(projectName);
-            localStorage.setItem("projects", JSON.stringify(projects));
-
-            projectInput.value = "";
-            loadProjects();
-        }
-
-        // Remove a project
-        function removeProject(index) {
-            const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            projects.splice(index, 1);
-            localStorage.setItem("projects", JSON.stringify(projects));
-            loadProjects();
-        }
-
-        // Load projects on page load
-        loadProjects();
+        loadUserProjects();
     </script>
 
 </body>
