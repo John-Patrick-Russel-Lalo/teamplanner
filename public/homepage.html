@@ -6,104 +6,92 @@
     <title>TeamPlanner - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
     <!-- Navbar -->
-    <nav class="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
         <h1 class="text-xl font-bold">TeamPlanner</h1>
-        <div class="flex items-center space-x-4">
-            <img id="userImage" class="w-10 h-10 rounded-full cursor-pointer shadow-lg hidden" alt="User Profile" onclick="toggleProfile()">
-            <div id="profileCard" class="hidden absolute top-14 right-4 bg-white shadow-lg p-4 rounded-lg w-48">
-                <p id="userName" class="font-semibold"></p>
-                <p id="userEmail" class="text-sm text-gray-500 mb-2"></p>
-                <button onclick="logout()" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">Logout</button>
+
+        <div class="relative">
+            <img id="profile-pic" class="w-10 h-10 rounded-full cursor-pointer" src="" alt="Profile">
+            <div id="profile-menu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded shadow-md p-2">
+                <p id="user-name" class="text-center text-gray-700 font-semibold"></p>
+                <button id="logout-btn" class="w-full text-center text-red-600 mt-2 py-1 hover:bg-gray-200">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6">
-        <h2 class="text-3xl font-bold mb-4">Your Projects</h2>
-        <!-- Add New Project Form -->
-<div class="mb-4 flex flex-col sm:flex-row gap-2">
-    <input id="projectInput" type="text" placeholder="Enter project name..." 
-        class="w-full sm:w-80 p-2 border rounded-lg">
-    <button onclick="createProject()" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-        Create Project
-    </button>
-</div>
-
-<!-- List of User Projects -->
-        
-        <div id="projectList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </main>
+    <!-- Content -->
+    <div class="p-6">
+        <h2 class="text-2xl font-bold mb-4">Your Projects</h2>
+        <button id="add-project" class="bg-green-500 text-white px-4 py-2 rounded mb-4">+ Add Project</button>
+        <ul id="project-list" class="bg-white p-4 rounded shadow-md"></ul>
+    </div>
 
     <script>
-    let user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-        window.location.href = "/";
-    } else {
-        document.getElementById("userImage").src = user.picture;
-        document.getElementById("userImage").classList.remove("hidden");
-        document.getElementById("userName").textContent = user.name;
-        document.getElementById("userEmail").textContent = user.email;
-    }
-
-    async function createProject() {
-        const projectInput = document.getElementById("projectInput");
-        const projectName = projectInput.value.trim();
-        if (!projectName) return alert("Please enter a project name!");
-
-        try {
-            const response = await fetch("/api/createProject", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ projectName, userEmail: user.email })
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                alert("Project created successfully!");
-                loadUserProjects(); // Refresh the project list
-            } else {
-                alert("Error: " + result.error);
-            }
-        } catch (error) {
-            console.error("Error creating project:", error);
+        // Fetch user from localStorage
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("profile-pic").src = user.picture;
+            document.getElementById("user-name").textContent = user.name;
         }
-    }
 
-    async function loadUserProjects() {
-        try {
-            const response = await fetch(`/api/getUserProjects?email=${encodeURIComponent(user.email)}`);
-            const projects = await response.json();
+        // Toggle Profile Menu
+        document.getElementById("profile-pic").addEventListener("click", () => {
+            document.getElementById("profile-menu").classList.toggle("hidden");
+        });
 
-            const projectList = document.getElementById("projectList");
-            projectList.innerHTML = "";
+        // Logout
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
+        });
 
-            if (projects.length === 0) {
-                projectList.innerHTML = "<p class='text-gray-500'>No projects found.</p>";
-                return;
+        // Fetch projects from database
+        async function loadProjects() {
+            try {
+                const response = await fetch(`/api/getUserProjects?email=${user.email}`);
+                const projects = await response.json();
+
+                const projectList = document.getElementById("project-list");
+                projectList.innerHTML = "";
+                projects.forEach(proj => {
+                    const li = document.createElement("li");
+                    li.className = "p-2 border-b";
+                    li.textContent = `${proj.name} (Owner: ${proj.owner})`;
+                    projectList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error loading projects:", error);
             }
-
-            projects.forEach(project => {
-                const projectCard = document.createElement("div");
-                projectCard.className = "bg-white p-4 shadow-lg rounded-lg";
-
-                projectCard.innerHTML = `
-                    <h3 class="text-lg font-semibold">${project.name}</h3>
-                    <p class="text-sm text-gray-500">Owner: ${project.owner}</p>
-                `;
-
-                projectList.appendChild(projectCard);
-            });
-        } catch (error) {
-            console.error("Error loading projects:", error);
         }
-    }
 
-    loadUserProjects();
+        // Add Project
+        document.getElementById("add-project").addEventListener("click", async () => {
+            const projectName = prompt("Enter project name:");
+            if (!projectName) return;
+
+            try {
+                const response = await fetch("/api/createProject", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ projectName, userEmail: user.email })
+                });
+
+                if (response.ok) {
+                    loadProjects();
+                } else {
+                    console.error("Failed to create project");
+                }
+            } catch (error) {
+                console.error("Error creating project:", error);
+            }
+        });
+
+        // Load projects on page load
+        loadProjects();
     </script>
 
 </body>
