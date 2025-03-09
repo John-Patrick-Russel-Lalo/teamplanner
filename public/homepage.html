@@ -25,60 +25,85 @@
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <h2 class="text-3xl font-bold mb-4">Your Projects</h2>
+        <!-- Add New Project Form -->
+<div class="mb-4 flex flex-col sm:flex-row gap-2">
+    <input id="projectInput" type="text" placeholder="Enter project name..." 
+        class="w-full sm:w-80 p-2 border rounded-lg">
+    <button onclick="createProject()" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+        Create Project
+    </button>
+</div>
+
+<!-- List of User Projects -->
+        
         <div id="projectList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </main>
 
     <script>
-        let user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            window.location.href = "/";
-        } else {
-            document.getElementById("userImage").src = user.picture;
-            document.getElementById("userImage").classList.remove("hidden");
-            document.getElementById("userName").textContent = user.name;
-            document.getElementById("userEmail").textContent = user.email;
-        }
+    let user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        window.location.href = "/";
+    } else {
+        document.getElementById("userImage").src = user.picture;
+        document.getElementById("userImage").classList.remove("hidden");
+        document.getElementById("userName").textContent = user.name;
+        document.getElementById("userEmail").textContent = user.email;
+    }
 
-        function toggleProfile() {
-            document.getElementById("profileCard").classList.toggle("hidden");
-        }
+    async function createProject() {
+        const projectInput = document.getElementById("projectInput");
+        const projectName = projectInput.value.trim();
+        if (!projectName) return alert("Please enter a project name!");
 
-        function logout() {
-            localStorage.removeItem("user");
-            localStorage.removeItem("google_access_token");
-            window.location.href = "/";
-        }
+        try {
+            const response = await fetch("/api/createProject", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ projectName, userEmail: user.email })
+            });
 
-        async function loadUserProjects() {
-            try {
-                const response = await fetch(`/api/getUserProjects?email=${encodeURIComponent(user.email)}`);
-                const projects = await response.json();
-
-                const projectList = document.getElementById("projectList");
-                projectList.innerHTML = "";
-
-                if (projects.length === 0) {
-                    projectList.innerHTML = "<p class='text-gray-500'>No projects found.</p>";
-                    return;
-                }
-
-                projects.forEach(project => {
-                    const projectCard = document.createElement("div");
-                    projectCard.className = "bg-white p-4 shadow-lg rounded-lg";
-
-                    projectCard.innerHTML = `
-                        <h3 class="text-lg font-semibold">${project.name}</h3>
-                        <p class="text-sm text-gray-500">Owner: ${project.owner}</p>
-                    `;
-
-                    projectList.appendChild(projectCard);
-                });
-            } catch (error) {
-                console.error("Error loading projects:", error);
+            const result = await response.json();
+            if (response.ok) {
+                alert("Project created successfully!");
+                loadUserProjects(); // Refresh the project list
+            } else {
+                alert("Error: " + result.error);
             }
+        } catch (error) {
+            console.error("Error creating project:", error);
         }
+    }
 
-        loadUserProjects();
+    async function loadUserProjects() {
+        try {
+            const response = await fetch(`/api/getUserProjects?email=${encodeURIComponent(user.email)}`);
+            const projects = await response.json();
+
+            const projectList = document.getElementById("projectList");
+            projectList.innerHTML = "";
+
+            if (projects.length === 0) {
+                projectList.innerHTML = "<p class='text-gray-500'>No projects found.</p>";
+                return;
+            }
+
+            projects.forEach(project => {
+                const projectCard = document.createElement("div");
+                projectCard.className = "bg-white p-4 shadow-lg rounded-lg";
+
+                projectCard.innerHTML = `
+                    <h3 class="text-lg font-semibold">${project.name}</h3>
+                    <p class="text-sm text-gray-500">Owner: ${project.owner}</p>
+                `;
+
+                projectList.appendChild(projectCard);
+            });
+        } catch (error) {
+            console.error("Error loading projects:", error);
+        }
+    }
+
+    loadUserProjects();
     </script>
 
 </body>
