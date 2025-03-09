@@ -6,6 +6,12 @@ export default async function handler(req, res) {
         connectionString: process.env.DATABASE_URL
     });
 
-    const result = await pool.query("SELECT * FROM projects");
-    res.json(result.rows);
+    try {
+        const result = await pool.query("SELECT * FROM projects");
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Database error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 }
+
