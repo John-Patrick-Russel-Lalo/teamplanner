@@ -1,8 +1,3 @@
-const express = require("express");
-const app = express();
-
-app.get("/api/config", (req, res) => {
-    res.json({ clientId: process.env.GOOGLE_CLIENT_ID }); // Replace with your actual Client ID
-});
-
-app.listen(3000, () => console.log("Server running on port 3000"));
+export default function handler(req, res) {
+    res.status(200).json({ clientId: "YOUR_GOOGLE_CLIENT_ID" });
+}
