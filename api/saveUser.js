@@ -1,30 +1,26 @@
-export default async function handler(req, res) {
-    if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
+import { Pool } from "pg";
 
-    const pg = await import("pg");
-    const { Pool } = pg;
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
+
+export default async function handler(req, res) {
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const { email, name, picture } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
 
     try {
-        const { email, name, picture } = req.body;
-        if (!email || !name) return res.status(400).json({ error: "Missing required fields" });
+        const result = await pool.query(
+            "INSERT INTO users (email, name, picture) VALUES ($1, $2, $3) ON CONFLICT (email) DO UPDATE SET name = $2, picture = $3 RETURNING *",
+            [email, name, picture]
+        );
 
-        console.log("Checking if user exists:", email);
-        const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-
-        if (userResult.rowCount === 0) {
-            console.log("Creating new user:", email);
-            const insertResult = await pool.query(
-                "INSERT INTO users (email, name, picture) VALUES ($1, $2, $3) RETURNING *",
-                [email, name, picture]
-            );
-            res.json({ message: "User created", user: insertResult.rows[0] });
-        } else {
-            console.log("User already exists:", email);
-            res.json({ message: "User exists", user: userResult.rows[0] });
-        }
+        res.status(200).json(result.rows[0]);
     } catch (error) {
-        console.error("Database Error:", error);
-        res.status(500).json({ error: "Internal Server Error", details: error.message });
+        console.error("Database error:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 }
