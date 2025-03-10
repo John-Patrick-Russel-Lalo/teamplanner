@@ -21,6 +21,7 @@
                 const response = await fetch("/api/config");
                 const data = await response.json();
                 const CLIENT_ID = data.clientId;
+                console.log(CLIENT_ID);
 
                 document.getElementById("g_id_onload").setAttribute("data-client_id", CLIENT_ID);
                 google.accounts.id.initialize({
