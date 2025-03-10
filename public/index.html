@@ -20,11 +20,11 @@
             try {
                 const response = await fetch("/api/config");
                 const data = await response.json();
-                const clientId = data.clientId;
+                const CLIENT_ID = data.clientId;
 
-                document.getElementById("g_id_onload").setAttribute("data-client_id", clientId);
+                document.getElementById("g_id_onload").setAttribute("data-client_id", CLIENT_ID);
                 google.accounts.id.initialize({
-                    client_id: clientId,
+                    client_id: CLIENT_ID,
                     callback: handleCredentialResponse
                 });
                 google.accounts.id.renderButton(
