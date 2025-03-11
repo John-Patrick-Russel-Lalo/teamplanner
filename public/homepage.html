@@ -29,69 +29,7 @@
     </div>
 
     <script>
-        // Fetch user from localStorage
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            window.location.href = "index.html";
-        } else {
-            document.getElementById("profile-pic").src = user.picture;
-            document.getElementById("user-name").textContent = user.name;
-        }
-
-        // Toggle Profile Menu
-        document.getElementById("profile-pic").addEventListener("click", () => {
-            document.getElementById("profile-menu").classList.toggle("hidden");
-        });
-
-        // Logout
-        document.getElementById("logout-btn").addEventListener("click", () => {
-            localStorage.removeItem("user");
-            window.location.href = "index.html";
-        });
-
-        // Fetch projects from database
-        async function loadProjects() {
-            try {
-                const response = await fetch(`/api/getUserProjects?email=${user.email}`);
-                const projects = await response.json();
-
-                const projectList = document.getElementById("project-list");
-                projectList.innerHTML = "";
-                projects.forEach(proj => {
-                    const li = document.createElement("li");
-                    li.className = "p-2 border-b";
-                    li.textContent = `${proj.name} (Owner: ${proj.owner})`;
-                    projectList.appendChild(li);
-                });
-            } catch (error) {
-                console.error("Error loading projects:", error);
-            }
-        }
-
-        // Add Project
-        document.getElementById("add-project").addEventListener("click", async () => {
-            const projectName = prompt("Enter project name:");
-            if (!projectName) return;
-
-            try {
-                const response = await fetch("/api/createProject", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ projectName, userEmail: user.email })
-                });
-
-                if (response.ok) {
-                    loadProjects();
-                } else {
-                    console.error("Failed to create project");
-                }
-            } catch (error) {
-                console.error("Error creating project:", error);
-            }
-        });
-
-        // Load projects on page load
-        loadProjects();
+        
     </script>
 
 </body>
