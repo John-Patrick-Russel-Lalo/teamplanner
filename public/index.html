@@ -6,6 +6,28 @@
   <title>Google Sign-In</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
+    async function loadGoogleSignIn() {
+      try {
+        // Fetch client ID from Vercel environment
+        const res = await fetch('/api/get-google-client-id');
+        const data = await res.json();
+        const clientId = data.clientId;
+
+        // Create the Google Sign-In button dynamically
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleCredentialResponse
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_signin'),
+          { theme: 'outline', size: 'large' }
+        );
+      } catch (err) {
+        console.error('Failed to load Google Sign-In:', err);
+      }
+    }
+
     function handleCredentialResponse(response) {
       console.log('ID Token:', response.credential);
 
@@ -25,26 +47,15 @@
         alert('Failed to sign in. Please try again.');
       });
     }
+
+    window.onload = loadGoogleSignIn;
   </script>
 </head>
 <body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f9; font-family: Arial, sans-serif;">
 
   <div style="text-align: center;">
     <h2>Sign In with Google</h2>
-    <div id="g_id_onload"
-         data-client_id="YOUR-GOOGLE-CLIENT-ID"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-
-    <div class="g_id_signin"
-         data-type="standard"
-         data-size="large"
-         data-theme="outline"
-         data-text="sign_in"
-         data-shape="rectangular"
-         data-logo_alignment="left">
-    </div>
+    <div id="g_id_signin"></div>
   </div>
   
 </body>
