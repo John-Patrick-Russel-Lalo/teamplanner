@@ -4,7 +4,7 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1",
-      "src": "/public/homepage.html/",
+      "src": "/public/homepage.html",
       "status": 404
     }
   ]
