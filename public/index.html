@@ -31,7 +31,7 @@
     function handleCredentialResponse(response) {
       console.log('ID Token:', response.credential);
 
-      fetch('/api/save-user', {
+      fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: response.credential })
