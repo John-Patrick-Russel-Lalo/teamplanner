@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const values = [sub, email, name, picture];
     const result = await pool.query(query, values);
 
-    //res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
+    res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
     res.status(200).json(result.rows[0]);
     
   } catch (error) {
