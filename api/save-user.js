@@ -12,8 +12,6 @@ export default async function handler(req, res) {
 
   if (!token) {
     return res.status(400).json({ error: 'Missing token' });
-  } else {
-    res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
   }
 
   try {
