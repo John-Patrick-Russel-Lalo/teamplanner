@@ -1,12 +1,10 @@
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { token } = req.body;
+export default function handler(req, res) {
+  const isLoggedIn = req.cookies?.token;
 
-    if (token) {
-      // Store the token in cookies
-      res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
-      return res.status(200).json({ success: true });
-    }
+  if (isLoggedIn) {
+    res.writeHead(302, { Location: '/homepage.html' }); // Redirect to homepage if logged in
+  } else {
+    res.writeHead(302, { Location: '/index.html' }); // Redirect to login page if not logged in
   }
-  res.status(400).json({ error: 'Invalid request' });
+  res.end();
 }
