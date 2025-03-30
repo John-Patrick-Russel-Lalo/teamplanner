@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Sign-In</title>
+  <link rel="stylesheet" href="loginstyle.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    async function loadGoogleSignIn() {
+      try {
+        // Fetch client ID from Vercel environment
+        const res = await fetch('/api/get-google-client-id');
+        const data = await res.json();
+        const clientId = data.clientId;
+
+        // Create the Google Sign-In button dynamically
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleCredentialResponse
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_signin'),
+          { theme: 'outline', size: 'large' }
+        );
+      } catch (err) {
+        console.error('Failed to load Google Sign-In:', err);
+      }
+    }
+
+    function handleCredentialResponse(response) {
+      console.log('ID Token:', response.credential);
+
+      fetch('/api/save-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Saved user:', data);
+        alert(`Welcome, ${data.name}!`);
+        window.location.href = '/homepage.html';
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('Failed to sign in. Please try again.');
+      });
+    }
+
+    window.onload = loadGoogleSignIn;
+  </script>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f9; font-family: Arial, sans-serif;">
+
+  <div class="nav">
+    <img src="/hehe.jpg" alt="logo">
+    <h2>TeamPlanner</h2>
+  </div>
+
+  <div class="loginDiv" style="text-align: center;">
+    <div class="borderLogin">
+      <h2>Sign In with Google</h2>
+      <div id="g_id_signin"></div>
+    </div>
+  </div>
+  
+</body>
+</html>

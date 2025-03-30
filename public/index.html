@@ -1,64 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Google Sign-In</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script>
-    async function loadGoogleSignIn() {
-      try {
-        // Fetch client ID from Vercel environment
-        const res = await fetch('/api/get-google-client-id');
-        const data = await res.json();
-        const clientId = data.clientId;
-
-        // Create the Google Sign-In button dynamically
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleCredentialResponse
-        });
-
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_signin'),
-          { theme: 'outline', size: 'large' }
-        );
-      } catch (err) {
-        console.error('Failed to load Google Sign-In:', err);
-      }
-    }
-
-    function handleCredentialResponse(response) {
-      console.log('ID Token:', response.credential);
-
-      fetch('/api/save-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Saved user:', data);
-        alert(`Welcome, ${data.name}!`);
-        window.location.href = '/homepage.html';
-      })
-      .catch(err => {
-        console.error('Error:', err);
-        alert('Failed to sign in. Please try again.');
-      });
-    }
-
-    window.onload = loadGoogleSignIn;
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f9; font-family: Arial, sans-serif;">
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>TeamPlanner</h2>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="sidebar-nav-mobile" id="sidebar-nav-mobile">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
 
-  <div style="text-align: center;">
-    <h2>Sign In with Google</h2>
-    <div id="g_id_signin"></div>
-    <a href="/api/auth">Go to Homepage</a>
-    
-  </div>
-  
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <div class="getstarted-section">
+                <h1>Welcome to TeamPlanner</h1>
+                <p>TeamPlanner is a web app that helps you plan your team's activities</p>
+                <a href="loginForm.html" class="loginBtn">Get Started</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="about-section">
+                <h1>About Us</h1>
+                <p>This TeamPlanner app/site has a feature about collaborating with your team easier</p>    
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="contact-section">
+                <h1>Contact Us</h1>
+                <p>Contact us in our Fcaebook page for more information about TeamPlanner</p>
+                <a href="#" class="gotofacebook">Facebook Page</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 TeamPlanner. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function() {
+            var navMobile = document.getElementById('sidebar-nav-mobile');
+            if (navMobile.style.display === 'flex') {
+                navMobile.style.display = 'none';
+            } else {
+                navMobile.style.display = 'flex';
+            }
+        });
+    </script>
 </body>
 </html>
