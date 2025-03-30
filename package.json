@@ -9,6 +9,7 @@
     "deploy": "vercel deploy"
   },
   "dependencies": {
+    "gitignore": "^0.7.0",
     "google-auth-library": "^9.0.0",
     "pg": "^8.11.0"
   },
