@@ -38,6 +38,7 @@ html{
 .nav h2{
     position: relative;
     font-size: 24px;
+    top: 1%;
 }   
 
 .loginDiv{
@@ -47,6 +48,13 @@ html{
     align-items: center;
     height: 100vh;
     padding: 0 100px;
+}
+
+.loginDiv h2{
+    font-size: 25px;
+    color: var(--mainColor);
+    position: absolute;
+    top: 30%;
 }
 
 .borderLogin{
