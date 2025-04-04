@@ -30,8 +30,14 @@ body {
 .div2 button{
     position: absolute;
    right: 200px;
-   bottom: 85%;
-   
+   bottom: 85%; 
+}
+
+.innerDiv{
+    position: absolute;
+    color: blue;
+    height: 200px;
+    width: 100px;
 }
 
 
