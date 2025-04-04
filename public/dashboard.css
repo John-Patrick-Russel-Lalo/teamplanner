@@ -31,13 +31,16 @@ body {
     position: absolute;
    right: 200px;
    bottom: 85%; 
+
 }
 
-.innerDiv{
+.div2 innerdiv2{
     position: absolute;
     color: blue;
     height: 200px;
     width: 100px;
+    left:40px;
+    bottom: 15%;
 }
 
 
