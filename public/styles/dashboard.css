@@ -6,6 +6,8 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    color: #333;
 }
 
 /* Navigation */
@@ -13,95 +15,99 @@ body {
     background-color: #2c3e50;
     height: 100px;
     width: 100%;
-    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 .navtop h1 {
     color: white;
     font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 2px;
 }
 
 /* Main Layout */
 .main {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Auto-fit, responsive layout */
-    gap: 30px;
-    align-items: center;
-    justify-items: center;
-    margin-top: 20px;
-}
-
-/* Container Styles */
-.div2, .div3, .div4 {
-    border-radius: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    box-sizing: border-box;
+    padding: 20px;
+    margin-top: 20px;
 }
 
 /* div2: Project Section */
 .div2 {
     background-color: #34495e;
     height: 400px;
-    width: 500px;
-    position: relative;
-}
-
-.div2 button {
-    position: absolute;
-    right: 200px;
-    bottom: 85%;
-}
-
-/* Inner div inside div2 */
-.div2 .innerdiv2 {
-    position: absolute;
-    background-color: white;
-    height: 250px;
-    width: 425px;
-    left: 40px;
-    bottom: 15%;
-    border-radius: 10%;
-}
-
-/* div3: Documents Section */
-.div3 {
-    background-color: #2c3e50;
-    height: 400px;
-    width: 200px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    display: flex;
     flex-direction: column;
-    border-radius: 10%;
-}
-
-.div3 button {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
     position: relative;
+    background: #2c3e50;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.div3 .innerdiv {
-    background-color: white;
+
+/* div2 Button */
+.div2 button {
+    background-color: #16a085;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.div2 button:hover {
+    background-color: #1abc9c;
+}
+
+/* innerdiv2: Centered & Responsive */
+.div2 .innerdiv2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically */
+    align-items: center; /* Centers content horizontally */
+    width: 80%;
     height: 70%;
-    width: 90%;
-    border-radius: 10%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
-.div3 img {
-    height: 30px;
+/* innerdiv2 List */
+.div2 .innerdiv2 ol {
+    list-style: none;
+    padding: 0;
+    text-align: center;
 }
 
-/* div4: Description Section */
-.div4 {
-    background-color: #2c3e50;
-    height: 400px;
-    width: 500px;
-    border-radius: 10%;
+.div2 .innerdiv2 li {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
 }
 
-.div4 button {
-    left: 50px;
-    bottom: 90%;
+/* Media Queries for Small Screens */
+@media (max-width: 768px) {
+    .main {
+        padding: 10px;
+    }
+
+    .div2 {
+        max-width: 90%;
+    }
 }
