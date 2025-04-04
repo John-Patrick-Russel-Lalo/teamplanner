@@ -57,6 +57,11 @@ html{
     top: 30%;
 }
 
+.loginDiv .loginBtn{
+    position: absolute;
+    bottom: 30%;
+}
+
 .borderLogin{
     border: 4px solid var(--mainColor);
     padding: 20px;
