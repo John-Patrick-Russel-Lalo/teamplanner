@@ -34,7 +34,7 @@ body {
 
 }
 
-.div2 innerdiv2{
+.div2 div {
     position: absolute;
     color: blue;
     height: 200px;
