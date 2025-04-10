@@ -47,6 +47,9 @@
         console.error('Error:', err);
         alert('Failed to sign in. Please try again.');
       });
+
+      const currentUserId = userInfo.sub;
+      localStorage.setItem("currentUserId", currentUserId);
     }
 
     window.onload = loadGoogleSignIn;
