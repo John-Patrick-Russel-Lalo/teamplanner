@@ -24,11 +24,11 @@ function addCard(listId) {
 
     card.addEventListener("dragstart", () => {
         draggedCard = card;
-        setTimeout(() => (card.style.display = "none"), 0);
+        setTimeout(() => (card.style.visibility = "hidden"), 0);
     });
 
     card.addEventListener("dragend", () => {
-        draggedCard.style.display = "block";
+        draggedCard.style.visibility = "visible";
         placeholder.remove();
     });
     
@@ -62,9 +62,19 @@ function setupDragAndDrop(list) {
         }
     });
 
-    list.addEventListener("drop", () => {
+    list.addEventListener("dragleave", () => {
+        if (placeholder.parentNode) {
+            placeholder.remove();
+        }
+    });
+
+    list.addEventListener("drop", (e) => {
+        e.preventDefault();
         if (draggedCard) {
             list.insertBefore(draggedCard, placeholder);
+            draggedCard.style.visibility = "visible"; // ⬅️ Ensure visibility is restored
+            placeholder.remove();
+            draggedCard = null;
         }
     });
 }
