@@ -47,7 +47,7 @@ async function restoreSession() {
 }
 
 // Auto-save every 10 seconds
-setInterval(saveSession, 10000);
+//setInterval(saveSession, 10000);
 
 // Restore session when page loads
 window.addEventListener("load", restoreSession);
