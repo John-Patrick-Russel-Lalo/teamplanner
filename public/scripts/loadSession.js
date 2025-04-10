@@ -1,4 +1,4 @@
-const currentUserId = localStorage.getItem("currentUserId"); // Replace with actual user ID from Google Auth
+/*const currentUserId = localStorage.getItem("currentUserId"); // Replace with actual user ID from Google Auth
 const currentProjectId = "project-456"; // Replace with actual project ID
 
 // Function to get the current project state (convert UI to JSON)
@@ -66,3 +66,5 @@ async function restoreSession() {
 
 // Restore session when page loads
 window.addEventListener("load", restoreSession);
+
+*/
