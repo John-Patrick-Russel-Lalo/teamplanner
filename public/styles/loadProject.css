@@ -1,0 +1,126 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: whitesmoke;
+}
+
+/* Navigation Bar */
+.nav {
+    background-color: #34495e;
+    width: 100vw;
+    height: 70px;
+    position: fixed;
+    top: 0;
+}
+
+.nav h1 {
+    color: white;
+    margin: 10px 10px;
+    position: absolute;
+}
+
+/* Board Layout */
+.board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    overflow: scroll;
+    margin-top: 20%;
+    height: 100%;
+    width: auto;
+    padding: 10%;
+}
+
+/* List Styles */
+.list {
+    width: 200px;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 200px;
+    word-wrap: break-word;
+    box-shadow: 0 0 15px lightgray;
+}
+
+.list h1 {
+    text-align: left;
+    color: #34495e;
+}
+
+/* Card Styles */
+.card {
+    background: #34495e;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: grab;
+    word-wrap: break-word;
+    width: 90%;
+    height: fit-content;
+    text-align:left;
+}
+
+.card p {
+    color: white;
+}
+
+/* Add Card Button */
+.add-card {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px;
+    border: none;
+    border-radius:10px;
+    background: #34495e;
+    color: white;
+    cursor: pointer;
+}
+
+/* Placeholder for Dragging */
+.placeholder {
+    background: rgba(91, 91, 91, 0.83);
+    height: 40px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+/* Add List Button */
+.add-list {
+    background-color: #34495e;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    height: 50px;
+    width: 100px;
+    margin: 20px 0;
+}
+
+/* Input Fields */
+.listTitleInput,
+.cardRename {
+    border: 3px solid #34495e;
+    outline-color: #34495e;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    height: 35px;
+    width: 80px;
+    padding: 0 5px;
+    color: #34495e;
+}
+
+.cardRename {
+    word-wrap: break-word;
+    max-width:90%;
+    width: 80%;
+    height: 100%;
+    align-self: center;
+    overflow-wrap: break-word;
+}
