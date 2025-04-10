@@ -42,6 +42,7 @@ async function restoreSession() {
 
     if (!currentUserId) {
         console.error("User not logged in! Cannot restore session.");
+        alert("restore");
         return;
     }
     
