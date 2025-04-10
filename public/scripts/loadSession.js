@@ -15,6 +15,7 @@ async function saveSession() {
 
     if (!currentUserId) {
         console.error("User not logged in!");
+        alert("yeheeey");
         return;
     }
     
