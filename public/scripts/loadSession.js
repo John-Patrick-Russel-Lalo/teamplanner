@@ -1,4 +1,4 @@
-const currentUserId = "user-123"; // Replace with actual user ID from Google Auth
+const currentUserId = localStorage.getItem("currentUserId"); // Replace with actual user ID from Google Auth
 const currentProjectId = "project-456"; // Replace with actual project ID
 
 // Function to get the current project state (convert UI to JSON)
