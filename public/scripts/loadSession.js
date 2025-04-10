@@ -12,6 +12,12 @@ function getCurrentProjectState() {
 
 // Save session to backend
 async function saveSession() {
+
+    if (!currentUserId) {
+        console.error("User not logged in!");
+        return;
+    }
+    
     const sessionData = {
         user_id: currentUserId,
         project_id: currentProjectId,
@@ -32,6 +38,12 @@ async function saveSession() {
 
 // Restore session from backend
 async function restoreSession() {
+
+    if (!currentUserId) {
+        console.error("User not logged in! Cannot restore session.");
+        return;
+    }
+    
     try {
         const response = await fetch(`/api/get-session?user_id=${currentUserId}&project_id=${currentProjectId}`);
         const data = await response.json();
