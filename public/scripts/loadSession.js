@@ -6,6 +6,7 @@ function getCurrentProjectState() {
     return {
         tasks: document.querySelector("#tasks").innerHTML, // Example task state
         columns: document.querySelector("#columns").innerHTML
+        column: task.closest(".column").id
     };
 }
 
