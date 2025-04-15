@@ -33,42 +33,8 @@
             </div>  
         </div>
     </div>
-    <script>
-document.getElementById("addProjectBtn").addEventListener("click", async () => {
-  const projectName = prompt("Enter project name:");
-  if (!projectName) return;
+    <script src="scripts/dashboard.js"></script>
 
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    alert("User not logged in.");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/create-project", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: projectName,
-        userId: userId,
-        board: {} // empty board structure for now
-      })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    alert(`Project "${data.project.name}" created!`);
-    // TODO: Add it to the <ol> list dynamically if you want
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to create project.");
-  }
-});
-    </script>
     
 </body>
 </html>
