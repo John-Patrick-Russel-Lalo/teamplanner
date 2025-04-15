@@ -1,7 +1,11 @@
 let board = document.getElementById("board");
-const userId = localStorage.getItem('userId');
-const projectId = new URLSearchParams(window.location.search).get("id");
+const projectId = localStorage.getItem('projectId'); // or from URL or whatever
+const userId = localStorage.getItem('userId'); // stored after login
 
+if (!projectId || !userId) {
+  console.error("Missing projectId or userId");
+  return;
+}
 let boardData = {
   title: "Untitled",
   lists: []
