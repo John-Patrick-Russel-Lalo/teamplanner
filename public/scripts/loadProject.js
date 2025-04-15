@@ -24,7 +24,7 @@ socket.onmessage = (event) => {
 
 // Load project from Vercel
 async function loadProject() {
-  const res = await fetch(`https://teamplanner.vercel.app/api/project?id=${projectId}&userId=${userId}`);
+  const res = await fetch(`/api/project?id=${projectId}&userId=${userId}`);
   const result = await res.json();
   boardData = result.board || { title: "Untitled", lists: [] };
   renderFullBoard();
