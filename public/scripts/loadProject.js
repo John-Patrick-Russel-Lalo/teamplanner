@@ -6,7 +6,7 @@ let boardData = {
   lists: []
 };
 
-const socket = new WebSocket("wss://YOUR_RENDER_DOMAIN.onrender.com");
+const socket = new WebSocket("wss://teamplanner-server.onrender.com");
 
 // WebSocket logic
 socket.onopen = () => {
@@ -23,7 +23,7 @@ socket.onmessage = (event) => {
 
 // Load project from Vercel
 async function loadProject() {
-  const res = await fetch(`https://YOUR_VERCEL_URL.vercel.app/api/project?id=${projectId}`);
+  const res = await fetch(`https://teamplanner.vercel.app/api/project?id=${projectId}`);
   const result = await res.json();
   boardData = result.board || { title: "Untitled", lists: [] };
   renderFullBoard();
