@@ -1,4 +1,5 @@
 let board = document.getElementById("board");
+const userId = localStorage.getItem('userId');
 const projectId = new URLSearchParams(window.location.search).get("id");
 
 let boardData = {
