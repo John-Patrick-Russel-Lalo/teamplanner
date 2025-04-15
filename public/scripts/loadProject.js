@@ -177,6 +177,24 @@ function addCard(listId) {
   renameInput.focus();
 }
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const projectId = localStorage.getItem("projectId");
+  if (!projectId) return alert("No project selected.");
+
+  try {
+    const res = await fetch(`/api/project?id=${projectId}`);
+    const data = await res.json();
+
+    const boardData = data.project.board || {};
+    // Reconstruct board from boardData (lists/cards)
+
+  } catch (err) {
+    console.error("Failed to load project:", err);
+    alert("Could not load project.");
+  }
+});
+
+
 // Send updated board to WebSocket
 function syncBoard() {
   socket.send(JSON.stringify({
