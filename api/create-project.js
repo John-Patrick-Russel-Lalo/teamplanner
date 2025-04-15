@@ -14,12 +14,11 @@ export default async function handler(req, res) {
   try {
     console.log('Creating project with:', { name, userId, board });
 
-    const result = await pool.query(
-      `INSERT INTO projects (name, board, members)
-       VALUES ($1, $2, ARRAY[$3])
-       RETURNING *`,
-      [name, board || {}, userId]
-    );
+    const sql = 'INSERT INTO projects (name, board, members) VALUES ($1, $2, ARRAY[$3]) RETURNING *';
+    const values = [name, board || {}, userId];
+
+    const result = await pool.query(sql, values);
+    
 
     res.status(200).json({ project: result.rows[0] });
   } catch (err) {
