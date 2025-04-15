@@ -1,122 +1,184 @@
-// Global variables
-let draggedCard = null;
-const placeholder = document.createElement("div");
-placeholder.classList.add("placeholder");
+let board = document.getElementById("board");
+const projectId = new URLSearchParams(window.location.search).get("id");
 
-let board = document.getElementById("board"); // Assuming board already exists
+let boardData = {
+  title: "Untitled",
+  lists: []
+};
 
-// Function to add a card to a specified list
-function addCard(listId) {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.draggable = true;
+const socket = new WebSocket("wss://YOUR_RENDER_DOMAIN.onrender.com");
 
-    const renameInput = document.createElement("input");
-    renameInput.classList.add("cardRename");
-    card.appendChild(renameInput);
+// WebSocket logic
+socket.onopen = () => {
+  console.log("Connected to WebSocket");
+};
 
-    renameInput.addEventListener("change", () => {
-        const content = document.createElement("p");
-        content.textContent = renameInput.value;
-        card.appendChild(content);
-        renameInput.remove(); // Remove input after renaming
-    });
+socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.type === "updateBoard" && data.projectId === projectId) {
+    boardData = data.boardData;
+    renderFullBoard();
+  }
+};
 
-    card.addEventListener("dragstart", () => {
-        draggedCard = card;
-        setTimeout(() => (card.style.visibility = "hidden"), 0);
-    });
-
-    card.addEventListener("dragend", () => {
-        draggedCard.style.visibility = "visible";
-        placeholder.remove();
-    });
-    
-    renameInput.addEventListener("blur", () => {
-      if(!renameInput.value.trim()){
-        renameInput.remove();
-        card.remove();
-      }
-      
-    });
-    
-    document.getElementById(listId).appendChild(card);
-    
-    renameInput.focus();
+// Load project from Vercel
+async function loadProject() {
+  const res = await fetch(`https://YOUR_VERCEL_URL.vercel.app/api/project?id=${projectId}`);
+  const result = await res.json();
+  boardData = result.board || { title: "Untitled", lists: [] };
+  renderFullBoard();
 }
 
-// Function to enable drag-and-drop for lists
-function setupDragAndDrop(list) {
-    list.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        const closestCard = Array.from(list.querySelectorAll(".card")).reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = e.clientY - box.top - box.height / 2;
-            return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
+function renderFullBoard() {
+  board.innerHTML = "";
+  boardData.lists.forEach((list, i) => {
+    const listContainer = document.createElement("div");
+    listContainer.classList.add("list");
+    listContainer.id = list.id;
 
-        if (closestCard) {
-            closestCard.parentNode.insertBefore(placeholder, closestCard);
-        } else {
-            list.appendChild(placeholder);
-        }
-    });
+    const listTitle = document.createElement("h1");
+    listTitle.textContent = list.name;
+    listContainer.appendChild(listTitle);
 
-    list.addEventListener("dragleave", () => {
-        if (placeholder.parentNode) {
-            placeholder.remove();
-        }
-    });
+    const addCardButton = document.createElement("button");
+    addCardButton.classList.add("add-card");
+    addCardButton.textContent = "+ Add Card";
+    addCardButton.addEventListener("click", () => {
+        addCard(list.id);
+    });
 
-    list.addEventListener("drop", (e) => {
-        e.preventDefault();
-        if (draggedCard) {
-            list.insertBefore(draggedCard, placeholder);
-            draggedCard.style.visibility = "visible"; // ⬅️ Ensure visibility is restored
-            placeholder.remove();
-            draggedCard = null;
-        }
-    });
+    list.cards.forEach((cardText) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      const cardP = document.createElement("p");
+      cardP.textContent = cardText;
+      card.appendChild(cardP);
+      listContainer.appendChild(card);
+    });
+
+    listContainer.appendChild(addCardButton);
+    board.appendChild(listContainer);
+
+    new Sortable(listContainer, {
+      group: "shared",
+      animation: 150,
+      draggable: ".card",
+      filter: "h1, .add-card",
+      ghostClass: "ghost",
+      chosenClass: "chosen",
+      onEnd: () => {
+        syncBoard();
+      }
+    });
+  });
 }
 
-// Function to add a new list
+// Modify your addList to update boardData and sync
 function addList() {
-    const listTitleInput = document.createElement("input");
-    listTitleInput.classList.add("listTitleInput")
-    board.appendChild(listTitleInput);
+  const listContainer = document.createElement("div");
+  listContainer.classList.add("list");
 
-    const list = document.createElement("div");
-    list.classList.add("list");
+  const listTitleInput = document.createElement("input");
+  listTitleInput.placeholder = "List name";
+  listContainer.appendChild(listTitleInput);
 
-    const addCardsButton = document.createElement("button");
-    addCardsButton.classList.add("add-card")
-    addCardsButton.textContent = "Add Card";
+  const addCardButton = document.createElement("button");
+  addCardButton.classList.add("add-card");
+  addCardButton.textContent = "+ Add Card";
 
-    listTitleInput.addEventListener("change", () => {
-        if (listTitleInput.value.trim() === "") return; // Prevent empty list creation
+  listTitleInput.addEventListener("change", () => {
+    if (!listTitleInput.value.trim()) return;
 
-        const listTitle = document.createElement("h1");
-        listTitle.textContent = listTitleInput.value;
-        list.appendChild(listTitle);
-        listTitleInput.remove(); // Remove input after entering name
+    const listTitle = document.createElement("h1");
+    listTitle.textContent = listTitleInput.value;
+    listContainer.appendChild(listTitle);
+    listTitleInput.remove();
 
-        list.id = `list-${listTitleInput.value.replace(/\s+/g, "-")}`; // Unique list ID
-        list.appendChild(addCardsButton);
+    const listId = `list-${Date.now()}`;
+    listContainer.id = listId;
+    listContainer.appendChild(addCardButton);
+    board.appendChild(listContainer);
 
-        setupDragAndDrop(list);
-        board.appendChild(list);
-    });
+    boardData.lists.push({
+      id: listId,
+      name: listTitle.textContent,
+      cards: []
+    });
 
-    addCardsButton.addEventListener("click", () => {
-        addCard(list.id);
-    });
+    syncBoard();
 
-    listTitleInput.addEventListener("blur", () => {
-        if (!listTitleInput.value.trim()) {
-            listTitleInput.remove();
-            list.remove(); // Remove list if unfocused and empty
-        }
-    });
+    new Sortable(listContainer, {
+      group: "shared",
+      animation: 150,
+      draggable: ".card",
+      filter: "h1, .add-card",
+      ghostClass: "ghost",
+      chosenClass: "chosen",
+      onEnd: () => {
+        syncBoard();
+      }
+    });
+  });
 
-    listTitleInput.focus(); // Automatically focus input on creation
+  addCardButton.addEventListener("click", () => {
+    addCard(listContainer.id);
+  });
+
+  listTitleInput.addEventListener("blur", () => {
+    if (!listTitleInput.value.trim()) {
+      listTitleInput.remove();
+      listContainer.remove();
+    }
+  });
+
+  board.appendChild(listContainer);
+  listTitleInput.focus();
 }
+
+function addCard(listId) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.draggable = true;
+
+  const renameInput = document.createElement("input");
+  renameInput.classList.add("cardRename");
+  card.appendChild(renameInput);
+
+  renameInput.addEventListener("change", () => {
+    if (!renameInput.value.trim()) {
+      card.remove();
+      return;
+    }
+    const content = document.createElement("p");
+    content.textContent = renameInput.value;
+    card.appendChild(content);
+    renameInput.remove();
+
+    const list = boardData.lists.find(l => l.id === listId);
+    if (list) {
+      list.cards.push(content.textContent);
+      syncBoard();
+    }
+  });
+
+  renameInput.addEventListener("blur", () => {
+    if (!renameInput.value.trim()) {
+      card.remove();
+    }
+  });
+
+  document.getElementById(listId).appendChild(card);
+  renameInput.focus();
+}
+
+// Send updated board to WebSocket
+function syncBoard() {
+  socket.send(JSON.stringify({
+    type: "updateBoard",
+    projectId,
+    boardData
+  }));
+}
+
+loadProject();
+      
