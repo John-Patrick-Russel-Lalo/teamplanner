@@ -30,27 +30,27 @@
     }
 
     function handleCredentialResponse(response) {
-      console.log('ID Token:', response.credential);
+  console.log('ID Token:', response.credential);
 
-      fetch('/api/save-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Saved user:', data);
-        alert(`Welcome, ${data.name}!`);
-        window.location.href = '/dashboard.html';
-      })
-      .catch(err => {
-        console.error('Error:', err);
-        alert('Failed to sign in. Please try again.');
-      });
-
-      const currentUserId = userInfo.sub;
-      localStorage.setItem("userId", currentUserId);
+  fetch('/api/save-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: response.credential })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('Saved user:', data);
+    alert(`Welcome, ${data.name}!`);
+    localStorage.setItem("userId", data.id); // Set userId from DB
+    window.location.href = '/dashboard.html';
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    alert('Failed to sign in. Please try again.');
+  });
     }
+    
+
 
     window.onload = loadGoogleSignIn;
   </script>
