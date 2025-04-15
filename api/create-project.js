@@ -12,6 +12,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('Creating project with:', { name, userId, board });
+
     const result = await pool.query(
       `INSERT INTO projects (name, board, members)
        VALUES ($1, $2, ARRAY[$3])
@@ -21,7 +23,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ project: result.rows[0] });
   } catch (err) {
-    console.error('Error creating project:', err);
+    console.error('DB Error:', err);  // <-- this log is important
     res.status(500).json({ error: 'Failed to create project' });
   }
 }
