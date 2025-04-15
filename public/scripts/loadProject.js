@@ -2,10 +2,7 @@ let board = document.getElementById("board");
 const projectId = localStorage.getItem('projectId'); // or from URL or whatever
 const userId = localStorage.getItem('userId'); // stored after login
 
-if (!projectId || !userId) {
-  console.error("Missing projectId or userId");
-  return;
-}
+
 let boardData = {
   title: "Untitled",
   lists: []
@@ -28,6 +25,10 @@ socket.onmessage = (event) => {
 
 // Load project from Vercel
 async function loadProject() {
+  if (!projectId || !userId) {
+  console.error("Missing projectId or userId");
+  return;
+  }
   const res = await fetch(`/api/project?id=${projectId}&userId=${userId}`);
   const result = await res.json();
   boardData = result.board || { title: "Untitled", lists: [] };
