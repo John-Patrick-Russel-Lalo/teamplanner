@@ -30,6 +30,9 @@ export default async function handler(req, res) {
       lists: Array.isArray(board.lists) ? board.lists : []
     };
 
+    console.log(project);
+    console.log(project.board);
+
     res.status(200).json({ project });
   } catch (error) {
     console.error('Error loading project:', error);
