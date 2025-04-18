@@ -21,7 +21,16 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.status(200).json({ project: result.rows[0] });
+    const project = result.rows[0];
+    const board = project.board || {};
+
+    // Ensure board has correct structure
+    project.board = {
+      title: project.name || 'Untitled',
+      lists: Array.isArray(board.lists) ? board.lists : []
+    };
+
+    res.status(200).json({ project });
   } catch (error) {
     console.error('Error loading project:', error);
     res.status(500).json({ error: 'Internal server error' });
