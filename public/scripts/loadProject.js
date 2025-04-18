@@ -40,6 +40,7 @@ async function loadProject() {
     }
 
     boardData = data.project.board || { title: "Untitled", lists: [] };
+    console.log(data.project.board);
     renderFullBoard();
   } catch (err) {
     console.error("Failed to load project:", err);
