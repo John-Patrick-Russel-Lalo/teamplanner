@@ -29,6 +29,8 @@ async function loadProject() {
     return alert("Missing project or user info.");
   }
 
+  console.log("Loading project with:", projectId, userId);
+
   try {
     const res = await fetch(`/api/project?id=${projectId}&userId=${userId}`);
     const data = await res.json();
