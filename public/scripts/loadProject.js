@@ -25,8 +25,8 @@ socket.onmessage = (event) => {
 // Load project from API
 async function loadProject() {
   if (!projectId || !userId) {
-    console.error("Missing projectId or userId");
-    return alert("Missing project or user info.");
+    Swal.fire("Missing projectId or userId");
+    return Swal.fire("Missing project or user info.");
   }
 
   console.log("Loading project with:", projectId, userId);
@@ -44,7 +44,7 @@ async function loadProject() {
     renderFullBoard();
   } catch (err) {
     console.error("Failed to load project:", err);
-    alert("Could not load project.");
+    Swal.fire("Cannot load the projects");
   }
 }
 
@@ -92,6 +92,9 @@ function renderFullBoard() {
 }
 
 function addList() {
+  
+  
+  
   const listContainer = document.createElement("div");
   listContainer.classList.add("list");
 
@@ -102,6 +105,15 @@ function addList() {
   const addCardButton = document.createElement("button");
   addCardButton.classList.add("add-card");
   addCardButton.textContent = "+ Add Card";
+  
+  const listDelBtn = document.createElement("button");
+  const listEditBtn = document.createElement("button");
+  listDelBtn.classList.add("listDelBtn");
+  listEditBtn.classList.add("listEditBtn");
+  listDelBtn.textContent = "Delete";
+  listEditBtn.textContent = "Edit";
+  
+  
 
   listTitleInput.addEventListener("change", () => {
     const name = listTitleInput.value.trim();
@@ -116,6 +128,9 @@ function addList() {
     listContainer.id = listId;
     listContainer.appendChild(addCardButton);
     board.appendChild(listContainer);
+    
+    listContainer.appendChild(listEditBtn);
+    listContainer.appendChild(listDelBtn);
 
     boardData.lists.push({ id: listId, name, cards: [] });
 
@@ -125,7 +140,7 @@ function addList() {
       group: "shared",
       animation: 150,
       draggable: ".card",
-      filter: "h1, .add-card",
+      filter: "h1, .add-card, .delBtn, .editBtn",
       ghostClass: "ghost",
       chosenClass: "chosen",
       onEnd: syncBoard
@@ -133,6 +148,26 @@ function addList() {
   });
 
   addCardButton.addEventListener("click", () => addCard(listContainer.id));
+  
+  listDelBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action is irreversible!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'confirmBtn',
+        cancelButton: 'cancelBtn'
+      }
+    }).then((result) => {
+      if(result.isConfirmed){
+        listContainer.remove();
+        Swal.fire(`Successfully Deleted`);
+      }
+    })
+
+  })
 
   listTitleInput.addEventListener("blur", () => {
     if (!listTitleInput.value.trim()) {
@@ -145,6 +180,10 @@ function addList() {
 }
 
 function addCard(listId) {
+  
+  const delBtn = document.createElement("button");
+  const editBtn = document.createElement("button");
+  
   const card = document.createElement("div");
   card.classList.add("card");
 
@@ -169,6 +208,19 @@ function addCard(listId) {
       list.cards.push(text);
       syncBoard();
     }
+    
+    
+    
+    delBtn.classList.add("delBtn");
+    editBtn.classList.add("editBtn");
+    
+    delBtn.textContent = "Delete";
+    editBtn.textContent = "Edit";
+  
+    card.appendChild(editBtn);
+    card.appendChild(delBtn);
+    
+    
   });
 
   renameInput.addEventListener("blur", () => {
@@ -176,10 +228,40 @@ function addCard(listId) {
       card.remove();
     }
   });
+  
+  delBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action is irreversible!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'confirmBtn',
+        cancelButton: 'cancelBtn'
+      }
+    }).then((result) => {
+      if(result.isConfirmed){
+        card.remove();
+        Swal.fire(`Successfully Deleted`);
+      }
+    })
+  
+  });
+  
+  
 
   document.getElementById(listId).appendChild(card);
   renameInput.focus();
+  
+  
 }
+
+function goBack(){
+  history.back();
+}
+
+
 
 function syncBoard() {
   socket.send(JSON.stringify({
@@ -190,4 +272,5 @@ function syncBoard() {
 }
 
 document.addEventListener("DOMContentLoaded", loadProject);
-                                  
+
+                                               
