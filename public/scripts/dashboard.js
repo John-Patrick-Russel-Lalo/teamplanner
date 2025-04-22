@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const addButton = document.querySelector('.div2 button');
 
   if (!userId) {
-    alert('No user ID found. Please sign in again.');
     window.location.href = '/';
     return;
   }
@@ -75,6 +74,16 @@ window.addEventListener('click', (e) => {
     menu.style.display = 'none';
   }
 });
+
+function logout() {
+  fetch('/api/logout', { method: 'POST' })
+    .then(() => {
+      // Clear local data (optional)
+      localStorage.clear();
+      // Redirect to login or home
+      window.location.href = '/';
+    });
+}
 
   fetchProjects();
 });
