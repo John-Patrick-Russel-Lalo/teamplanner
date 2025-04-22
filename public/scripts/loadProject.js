@@ -25,8 +25,14 @@ socket.onmessage = (event) => {
 // Load project from API
 async function loadProject() {
   if (!projectId || !userId) {
-    Swal.fire("Missing projectId or userId");
-    return Swal.fire("Missing project or user info.");
+    Swal.fire({
+      title: "Missing projectId or userId",
+      confirmButtonColor: "#2c3e50"
+    });
+    return Swal.fire({
+      title: "Missing projectId or userId",
+      confirmButtonColor: "#2c3e50"
+    });
   }
 
   console.log("Loading project with:", projectId, userId);
@@ -44,7 +50,10 @@ async function loadProject() {
     renderFullBoard();
   } catch (err) {
     console.error("Failed to load project:", err);
-    Swal.fire("Cannot load the projects");
+    Swal.fire({
+      title: "Cannot load the projects",
+      confirmButtonColor: "#2c3e50"
+    });
   }
 }
 
@@ -163,7 +172,10 @@ function addList() {
     }).then((result) => {
       if(result.isConfirmed){
         listContainer.remove();
-        Swal.fire(`Successfully Deleted`);
+        Swal.fire({
+          title: "Successfully Deleted",
+          confirmButtonColor: "#2c3e50"
+        })
       }
     })
 
@@ -243,7 +255,10 @@ function addCard(listId) {
     }).then((result) => {
       if(result.isConfirmed){
         card.remove();
-        Swal.fire(`Successfully Deleted`);
+        Swal.fire({
+          title: "Successfully Deleted",
+          confirmButtonColor: "#2c3e50"
+        })
       }
     })
   
@@ -273,4 +288,4 @@ function syncBoard() {
 
 document.addEventListener("DOMContentLoaded", loadProject);
 
-                                               
+                                             
