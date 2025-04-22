@@ -75,8 +75,8 @@ window.addEventListener('click', (e) => {
   }
 });
 
-function logout() {
-  alert("test");
+function logout(event) {
+  event.preventDefault();
   localStorage.removeItem('userId');
   window.location.href = '/';
 }
