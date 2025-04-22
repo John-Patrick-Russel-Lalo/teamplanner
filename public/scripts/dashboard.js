@@ -82,7 +82,21 @@ window.addEventListener('click', (e) => {
 
 function logout(event) {
   event.preventDefault();
-  google.accounts.id.disableAutoSelect();
-  localStorage.removeItem('userId');
-  window.location.href = '/';
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to logout?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Yes, logout'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      google.accounts.id.disableAutoSelect(); // stop auto-login
+      localStorage.removeItem('userId');
+      window.location.href = "/";
+    }
+  });
 }
+
