@@ -76,13 +76,8 @@ window.addEventListener('click', (e) => {
 });
 
 function logout() {
-  fetch('/api/logout', { method: 'POST' })
-    .then(() => {
-      // Clear local data (optional)
-      localStorage.clear();
-      // Redirect to login or home
-      window.location.href = '/';
-    });
+  localStorage.removeItem('userId');
+  window.location.href = '/';
 }
 
   fetchProjects();
