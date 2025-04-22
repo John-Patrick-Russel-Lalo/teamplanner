@@ -77,7 +77,7 @@ window.addEventListener('click', (e) => {
 
 
 
-  fetchProjects();
+  setInterval(fetchProjects, 1000);
 });
 
 function logout(event) {
