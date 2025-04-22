@@ -60,5 +60,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.getElementById('hamburger').addEventListener('click', () => {
+    console.log("test")
+    const menu = document.getElementById('mobileMenu');
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Optional: close menu on click outside
+window.addEventListener('click', (e) => {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
+
   fetchProjects();
 });
