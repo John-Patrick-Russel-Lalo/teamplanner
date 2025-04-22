@@ -75,11 +75,13 @@ window.addEventListener('click', (e) => {
   }
 });
 
+
+
+  fetchProjects();
+});
+
 function logout(event) {
   event.preventDefault();
   localStorage.removeItem('userId');
   window.location.href = '/';
 }
-
-  fetchProjects();
-});
