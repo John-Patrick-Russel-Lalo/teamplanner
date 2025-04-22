@@ -82,6 +82,7 @@ window.addEventListener('click', (e) => {
 
 function logout(event) {
   event.preventDefault();
+  google.accounts.id.disableAutoSelect();
   localStorage.removeItem('userId');
   window.location.href = '/';
 }
