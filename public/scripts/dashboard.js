@@ -27,7 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         projectList.appendChild(li);
+
+        
       });
+
+      document.getElementById('loaderOverlay').style.display = 'none';
     } catch (err) {
       console.error('Failed to fetch projects:', err);
       alert('Could not load projects.');
