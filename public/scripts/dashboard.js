@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add new project
   addButton.addEventListener('click', async () => {
-    const name = "";
+    const name;
 
     Swal.fire({
       title: 'Enter Project Name',
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).then((result) => {
       if (result.isConfirmed) {
       name = result.value;
+      return name = result.value;
     }
     });
     if (!name) return;
