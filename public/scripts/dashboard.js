@@ -36,7 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add new project
   addButton.addEventListener('click', async () => {
-    const name = prompt('Enter a name for your new project:');
+    const name = "";
+
+    Swal.fire({
+      title: 'Enter Project Name',
+      input: 'text',
+      inputPlaceholder: 'Type project name here',
+      showCancelButton: true,
+      confirmButtonColor: '#2c3e50',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Confirm'
+    }).then((result) => {
+      if (result.isConfirmed) {
+      name = result.value;
+    }
+    });
     if (!name) return;
 
     try {
