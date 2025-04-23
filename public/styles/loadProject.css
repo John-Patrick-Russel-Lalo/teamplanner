@@ -55,6 +55,8 @@ body {
     justify-content:center;
     transform-origin: center center;
     overflow:hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 /*.card:active {
     transform: rotate(0deg);
