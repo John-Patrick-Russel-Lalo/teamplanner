@@ -269,18 +269,35 @@ function addCard(listId) {
 
 
   editBtn.addEventListener("click", () => {
-    Swal.fire({
-      title: 'Edit Card',
-      input: 'text',
-      inputValue: name,
-      showCancelButton: true,
-      confirmButtonColor: '#2c3e50'
-    }).then({result} () => {
-      if(result.isConfirmed){
-         Swal.fire(name);
-      };
-    });
-  });
+  const currentText = card.querySelector("p")?.textContent || "";
+
+  Swal.fire({
+    title: 'Edit Card',
+    input: 'text',
+    inputValue: currentText,
+    showCancelButton: true,
+    confirmButtonColor: '#2c3e50',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Update'
+  }).then((result) => {
+    if (result.isConfirmed && result.value.trim()) {
+      const newText = result.value.trim();
+
+      // Update text in DOM
+      card.querySelector("p").textContent = newText;
+
+      // Update in boardData
+      const list = boardData.lists.find(l => l.id === listId);
+      const cardIndex = list.cards.indexOf(currentText);
+      if (cardIndex !== -1) {
+        list.cards[cardIndex] = newText;
+      }
+
+      syncBoard();
+    }
+  });
+});
+      
   
   
 
