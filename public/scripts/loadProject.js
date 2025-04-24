@@ -297,6 +297,37 @@ function addCard(listId) {
     }
   });
 });
+
+
+  listEditBtn.addEventListener("click", () => {
+  const currentListTitle = listContainer.querySelector("h1").textContent;
+
+  Swal.fire({
+    title: 'Edit List Name',
+    input: 'text',
+    inputValue: currentListTitle,
+    showCancelButton: true,
+    confirmButtonColor: '#2c3e50',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Update'
+  }).then((result) => {
+    if (result.isConfirmed && result.value.trim()) {
+      const newTitle = result.value.trim();
+
+      // Update DOM
+      listContainer.querySelector("h1").textContent = newTitle;
+
+      // Update boardData
+      const list = boardData.lists.find(l => l.id === listContainer.id);
+      if (list) {
+        list.name = newTitle;
+      }
+
+      syncBoard();
+    }
+  });
+});
+  
       
   
   
