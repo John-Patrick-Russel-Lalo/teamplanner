@@ -102,6 +102,61 @@ function renderFullBoard() {
     listContainer.appendChild(listEditBtn);
     listContainer.appendChild(listDelBtn);
 
+
+
+    listDelBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action is irreversible!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'confirmBtn',
+        cancelButton: 'cancelBtn'
+      }
+    }).then((result) => {
+      if(result.isConfirmed){
+        listContainer.remove();
+        Swal.fire({
+          title: "Successfully Deleted",
+          confirmButtonColor: "#2c3e50"
+        })
+        syncBoard();
+      }
+    })
+
+  })
+
+  listEditBtn.addEventListener("click", () => {
+  const currentListTitle = listContainer.querySelector("h1").textContent;
+
+  Swal.fire({
+    title: 'Edit List Name',
+    input: 'text',
+    inputValue: currentListTitle,
+    showCancelButton: true,
+    confirmButtonColor: '#2c3e50',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Update'
+  }).then((result) => {
+    if (result.isConfirmed && result.value.trim()) {
+      const newTitle = result.value.trim();
+
+      // Update DOM
+      listContainer.querySelector("h1").textContent = newTitle;
+
+      // Update boardData
+      const list = boardData.lists.find(l => l.id === listContainer.id);
+      if (list) {
+        list.name = newTitle;
+      }
+
+      syncBoard();
+    }
+  });
+});
+
     new Sortable(listContainer, {
       group: "shared",
       animation: 150,
