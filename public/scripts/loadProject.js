@@ -89,13 +89,24 @@ function renderFullBoard() {
     addCardButton.addEventListener("click", () => addCard(list.id));
 
     listContainer.appendChild(addCardButton);
+
+    const listDelBtn = document.createElement("button");
+    const listEditBtn = document.createElement("button");
+    listDelBtn.classList.add("listDelBtn");
+    listEditBtn.classList.add("listEditBtn");
+    listDelBtn.textContent = "Delete";
+    listEditBtn.textContent = "Edit";
+    
     board.appendChild(listContainer);
+
+    listContainer.appendChild(listEditBtn);
+    listContainer.appendChild(listDelBtn);
 
     new Sortable(listContainer, {
       group: "shared",
       animation: 150,
       draggable: ".card",
-      filter: "h1, .add-card",
+      filter: "h1, .add-card, .listDelBtn, .listEditBtn",
       ghostClass: "ghost",
       chosenClass: "chosen",
       onEnd: syncBoard
