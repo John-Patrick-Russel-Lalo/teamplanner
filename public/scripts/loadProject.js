@@ -72,6 +72,10 @@ function renderFullBoard() {
     listTitle.textContent = list.name;
     listContainer.appendChild(listTitle);
 
+    const delBtn = document.createElement("button");
+    const editBtn = document.createElement("button");
+  
+
     list.cards.forEach((cardText) => {
       const card = document.createElement("div");
       card.classList.add("card");
@@ -80,6 +84,9 @@ function renderFullBoard() {
       cardP.textContent = cardText;
 
       card.appendChild(cardP);
+
+      card.appendChild(editBtn);
+      card.appendChild(delBtn);
       listContainer.appendChild(card);
     });
 
@@ -102,6 +109,14 @@ function renderFullBoard() {
     listContainer.appendChild(listEditBtn);
     listContainer.appendChild(listDelBtn);
 
+    
+    delBtn.classList.add("delBtn");
+    editBtn.classList.add("editBtn");
+    
+    delBtn.textContent = "Delete";
+    editBtn.textContent = "Edit";
+  
+    
 
 
     listDelBtn.addEventListener("click", () => {
