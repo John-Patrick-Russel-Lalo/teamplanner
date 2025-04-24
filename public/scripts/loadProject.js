@@ -135,22 +135,25 @@ function renderFullBoard() {
     if (result.isConfirmed && result.value.trim()) {
       const newText = result.value.trim();
 
-      // Update text in DOM
+      // Update DOM
       card.querySelector("p").textContent = newText;
 
-      // Update in boardData
+      // Get correct list using outer list variable
+      const listId = listContainer.id;
       const list = boardData.lists.find(l => l.id === listId);
-      const cardIndex = list.cards.indexOf(currentText);
-      if (cardIndex !== -1) {
-        list.cards[cardIndex] = newText;
+      if (list) {
+        const cardIndex = list.cards.indexOf(currentText);
+        if (cardIndex !== -1) {
+          list.cards[cardIndex] = newText;
+          syncBoard();
+        }
       }
-
-      syncBoard();
     }
   });
 });
-      listContainer.appendChild(card);
-    });
+
+    }
+      
 
     const addCardButton = document.createElement("button");
     addCardButton.classList.add("add-card");
