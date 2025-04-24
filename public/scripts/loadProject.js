@@ -485,12 +485,19 @@ function goBack(){
 
 
 function syncBoard() {
-  socket.send(JSON.stringify({
-    type: "updateBoard",
-    projectId,
-    boardData
-  }));
+  boardData.lists.forEach((list, i) => {
+    const listEl = document.getElementById(list.id);
+    const cardEls = listEl.querySelectorAll(".card p");
+    list.cards = Array.from(cardEls).map(p => p.textContent.trim());
+  });
+
+  socket.send(JSON.stringify({
+    type: "updateBoard",
+    projectId,
+    boardData
+  }));
 }
+
 
 document.addEventListener("DOMContentLoaded", loadProject);
 
