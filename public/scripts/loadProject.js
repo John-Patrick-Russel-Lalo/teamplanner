@@ -22,6 +22,9 @@ socket.onmessage = (event) => {
   }
 };
 
+let name;
+let text;
+
 // Load project from API
 async function loadProject() {
   if (!projectId || !userId) {
@@ -125,7 +128,7 @@ function addList() {
   
 
   listTitleInput.addEventListener("change", () => {
-    const name = listTitleInput.value.trim();
+    name = listTitleInput.value.trim();
     if (!name) return;
 
     const listTitle = document.createElement("h1");
@@ -204,7 +207,7 @@ function addCard(listId) {
   card.appendChild(renameInput);
 
   renameInput.addEventListener("change", () => {
-    const text = renameInput.value.trim();
+    text = renameInput.value.trim();
     if (!text) {
       card.remove();
       return;
@@ -262,6 +265,21 @@ function addCard(listId) {
       }
     })
   
+  });
+
+
+  editBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Edit Card',
+      input: 'text',
+      inputValue: name,
+      showCancelButton: true,
+      confirmButtonColor: '#2c3e50'
+    }).then({result} () => {
+      if(result.isConfirmed){
+         Swal.fire(name);
+      };
+    });
   });
   
   
