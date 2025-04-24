@@ -12,25 +12,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Check if user is already a member
-    const check = await pool.query(
-      'SELECT * FROM projects WHERE id = $1 AND $2 = ANY(members)',
-      [projectId, userId]
-    );
+    const project = await pool.query('SELECT members FROM projects WHERE id = $1', [projectId]);
 
-    if (check.rows.length > 0) {
-      return res.status(200).json({ success: true, message: 'Already a member' });
+    if (project.rows.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
     }
 
-    // Add user to members array
-    await pool.query(
-      'UPDATE projects SET members = array_append(members, $1) WHERE id = $2',
-      [userId, projectId]
-    );
+    const currentMembers = project.rows[0].members || [];
+
+    if (!currentMembers.includes(userId)) {
+      currentMembers.push(userId);
+
+      await pool.query('UPDATE projects SET members = $1 WHERE id = $2', [
+        currentMembers,
+        projectId
+      ]);
+    }
 
     res.status(200).json({ success: true });
   } catch (err) {
-    console.error("Invite error:", err);
+    console.error('Invite error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
