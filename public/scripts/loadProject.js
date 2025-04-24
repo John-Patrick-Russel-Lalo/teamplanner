@@ -87,6 +87,12 @@ function renderFullBoard() {
 
       card.appendChild(cardP);
 
+      delBtn.classList.add("delBtn");
+      editBtn.classList.add("editBtn");
+    
+      delBtn.textContent = "Delete";
+      editBtn.textContent = "Edit";
+
       card.appendChild(editBtn);
       card.appendChild(delBtn);
 
@@ -166,11 +172,7 @@ function renderFullBoard() {
     listContainer.appendChild(listDelBtn);
 
     
-    delBtn.classList.add("delBtn");
-    editBtn.classList.add("editBtn");
     
-    delBtn.textContent = "Delete";
-    editBtn.textContent = "Edit";
   
     
 
