@@ -117,12 +117,14 @@ function renderFullBoard() {
       }
     }).then((result) => {
       if(result.isConfirmed){
+        boardData.lists = boardData.lists.filter(l => l.id !== list.id);
         listContainer.remove();
+        syncBoard();
         Swal.fire({
           title: "Successfully Deleted",
           confirmButtonColor: "#2c3e50"
         })
-        syncBoard();
+        
       }
     })
 
