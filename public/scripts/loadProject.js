@@ -72,8 +72,7 @@ function renderFullBoard() {
     listTitle.textContent = list.name;
     listContainer.appendChild(listTitle);
 
-    const delBtn = document.createElement("button");
-    const editBtn = document.createElement("button");
+    
   
 
     list.cards.forEach((cardText) => {
@@ -82,6 +81,9 @@ function renderFullBoard() {
 
       const cardP = document.createElement("p");
       cardP.textContent = cardText;
+
+      const delBtn = document.createElement("button");
+      const editBtn = document.createElement("button");
 
       card.appendChild(cardP);
 
@@ -102,6 +104,7 @@ function renderFullBoard() {
     }).then((result) => {
       if(result.isConfirmed){
         card.remove();
+        syncBoard();
         Swal.fire({
           title: "Successfully Deleted",
           confirmButtonColor: "#2c3e50"
