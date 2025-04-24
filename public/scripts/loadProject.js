@@ -61,115 +61,161 @@ async function loadProject() {
 }
 
 function renderFullBoard() {
-  board.innerHTML = "";
+  board.innerHTML = '';
+  boardTitle.value = boardData.title;
 
   boardData.lists.forEach((list) => {
-    const listContainer = document.createElement("div");
-    listContainer.classList.add("list");
-    listContainer.id = list.id;
+    const listContainer = document.createElement('div');
+    listContainer.classList.add('list');
+    listContainer.dataset.listId = list.id;
 
-    const listTitle = document.createElement("h1");
-    listTitle.textContent = list.name;
-    listContainer.appendChild(listTitle);
+    const titleInput = document.createElement('input');
+    titleInput.classList.add('list-title');
+    titleInput.value = list.name;
+
+    const editBtn = document.createElement('button');
+    const delBtn = document.createElement('button');
+    editBtn.classList.add('editBtn');
+    delBtn.classList.add('delBtn');
+    editBtn.textContent = 'Edit';
+    delBtn.textContent = 'Delete';
+
+    editBtn.addEventListener('click', () => {
+      Swal.fire({
+        title: 'Edit List Title',
+        input: 'text',
+        inputValue: titleInput.value,
+        showCancelButton: true,
+        confirmButtonColor: '#2c3e50',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Update'
+      }).then((result) => {
+        if (result.isConfirmed && result.value.trim()) {
+          list.name = result.value.trim();
+          titleInput.value = list.name;
+          syncBoard();
+        }
+      });
+    });
+
+    delBtn.addEventListener('click', () => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will delete the list and its cards!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        customClass: {
+          confirmButton: 'confirmBtn',
+          cancelButton: 'cancelBtn'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          boardData.lists = boardData.lists.filter(l => l.id !== list.id);
+          listContainer.remove();
+          syncBoard();
+        }
+      });
+    });
+
+    const addCardBtn = document.createElement('button');
+    addCardBtn.textContent = 'Add Card';
+    addCardBtn.classList.add('addCardBtn');
+    addCardBtn.addEventListener('click', () => {
+      Swal.fire({
+        title: 'Add New Card',
+        input: 'text',
+        showCancelButton: true,
+        confirmButtonColor: '#2c3e50',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Add'
+      }).then((result) => {
+        if (result.isConfirmed && result.value.trim()) {
+          const cardText = result.value.trim();
+          list.cards.push(cardText);
+          syncBoard();
+          renderFullBoard();
+        }
+      });
+    });
+
+    const cardsContainer = document.createElement('div');
+    cardsContainer.classList.add('cards');
 
     list.cards.forEach((cardText) => {
-      const card = document.createElement("div");
-      card.classList.add("card");
+      const card = document.createElement('div');
+      card.classList.add('card');
 
-      const cardP = document.createElement("p");
+      const cardP = document.createElement('p');
       cardP.textContent = cardText;
 
-      card.appendChild(cardP);
-      listContainer.appendChild(card);
-    });
+      const editCardBtn = document.createElement('button');
+      const delCardBtn = document.createElement('button');
+      editCardBtn.classList.add('editBtn');
+      delCardBtn.classList.add('delBtn');
+      editCardBtn.textContent = 'Edit';
+      delCardBtn.textContent = 'Delete';
 
-    const addCardButton = document.createElement("button");
-    addCardButton.classList.add("add-card");
-    addCardButton.textContent = "+ Add Card";
-    addCardButton.addEventListener("click", () => addCard(list.id));
-
-    listContainer.appendChild(addCardButton);
-
-    const listDelBtn = document.createElement("button");
-    const listEditBtn = document.createElement("button");
-    listDelBtn.classList.add("listDelBtn");
-    listEditBtn.classList.add("listEditBtn");
-    listDelBtn.textContent = "Delete";
-    listEditBtn.textContent = "Edit";
-    
-    board.appendChild(listContainer);
-
-    listContainer.appendChild(listEditBtn);
-    listContainer.appendChild(listDelBtn);
-
-
-
-    listDelBtn.addEventListener("click", () => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action is irreversible!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      customClass: {
-        confirmButton: 'confirmBtn',
-        cancelButton: 'cancelBtn'
-      }
-    }).then((result) => {
-      if(result.isConfirmed){
-        boardData.lists = boardData.lists.filter(l => l.id !== list.id);
-        listContainer.remove();
-        syncBoard();
+      editCardBtn.addEventListener('click', () => {
         Swal.fire({
-          title: "Successfully Deleted",
-          confirmButtonColor: "#2c3e50"
-        })
-        
-      }
-    })
+          title: 'Edit Card',
+          input: 'text',
+          inputValue: cardP.textContent,
+          showCancelButton: true,
+          confirmButtonColor: '#2c3e50',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: 'Update'
+        }).then((result) => {
+          if (result.isConfirmed && result.value.trim()) {
+            const newText = result.value.trim();
+            const cardIndex = list.cards.indexOf(cardText);
+            if (cardIndex !== -1) {
+              list.cards[cardIndex] = newText;
+              syncBoard();
+              renderFullBoard();
+            }
+          }
+        });
+      });
 
-  })
+      delCardBtn.addEventListener('click', () => {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'This action is irreversible!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          customClass: {
+            confirmButton: 'confirmBtn',
+            cancelButton: 'cancelBtn'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const cardIndex = list.cards.indexOf(cardText);
+            if (cardIndex !== -1) {
+              list.cards.splice(cardIndex, 1);
+              syncBoard();
+              renderFullBoard();
+            }
+          }
+        });
+      });
 
-  listEditBtn.addEventListener("click", () => {
-  const currentListTitle = listContainer.querySelector("h1").textContent;
-
-  Swal.fire({
-    title: 'Edit List Name',
-    input: 'text',
-    inputValue: currentListTitle,
-    showCancelButton: true,
-    confirmButtonColor: '#2c3e50',
-    cancelButtonColor: '#aaa',
-    confirmButtonText: 'Update'
-  }).then((result) => {
-    if (result.isConfirmed && result.value.trim()) {
-      const newTitle = result.value.trim();
-
-      // Update DOM
-      listContainer.querySelector("h1").textContent = newTitle;
-
-      // Update boardData
-      const list = boardData.lists.find(l => l.id === listContainer.id);
-      if (list) {
-        list.name = newTitle;
-      }
-
-      syncBoard();
-    }
-  });
-});
-
-    new Sortable(listContainer, {
-      group: "shared",
-      animation: 150,
-      draggable: ".card",
-      filter: "h1, .add-card, .listDelBtn, .listEditBtn",
-      ghostClass: "ghost",
-      chosenClass: "chosen",
-      onEnd: syncBoard
+      card.appendChild(cardP);
+      card.appendChild(editCardBtn);
+      card.appendChild(delCardBtn);
+      cardsContainer.appendChild(card);
     });
+
+    listContainer.appendChild(titleInput);
+    listContainer.appendChild(editBtn);
+    listContainer.appendChild(delBtn);
+    listContainer.appendChild(cardsContainer);
+    listContainer.appendChild(addCardBtn);
+    board.appendChild(listContainer);
   });
-}
+          }
+        
 
 function addList() {
   
