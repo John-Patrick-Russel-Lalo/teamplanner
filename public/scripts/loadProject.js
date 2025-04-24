@@ -290,8 +290,7 @@ function addList() {
     listContainer.appendChild(addCardButton);
     board.appendChild(listContainer);
     
-    listContainer.appendChild(listEditBtn);
-    listContainer.appendChild(listDelBtn);
+    
 
     boardData.lists.push({ id: listId, name, cards: [] });
 
@@ -367,6 +366,9 @@ function addList() {
       listContainer.remove();
     }
   });
+
+  listContainer.appendChild(listEditBtn);
+  listContainer.appendChild(listDelBtn);
 
   board.appendChild(listContainer);
   listTitleInput.focus();
