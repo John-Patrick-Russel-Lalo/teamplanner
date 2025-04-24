@@ -174,11 +174,64 @@ function renderFullBoard() {
   });
 });
 
+    delBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action is irreversible!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'confirmBtn',
+        cancelButton: 'cancelBtn'
+      }
+    }).then((result) => {
+      if(result.isConfirmed){
+        card.remove();
+        Swal.fire({
+          title: "Successfully Deleted",
+          confirmButtonColor: "#2c3e50"
+        })
+      }
+    })
+  
+  });
+
+    editBtn.addEventListener("click", () => {
+  const currentText = card.querySelector("p")?.textContent || "";
+
+  Swal.fire({
+    title: 'Edit Card',
+    input: 'text',
+    inputValue: currentText,
+    showCancelButton: true,
+    confirmButtonColor: '#2c3e50',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Update'
+  }).then((result) => {
+    if (result.isConfirmed && result.value.trim()) {
+      const newText = result.value.trim();
+
+      // Update text in DOM
+      card.querySelector("p").textContent = newText;
+
+      // Update in boardData
+      const list = boardData.lists.find(l => l.id === listId);
+      const cardIndex = list.cards.indexOf(currentText);
+      if (cardIndex !== -1) {
+        list.cards[cardIndex] = newText;
+      }
+
+      syncBoard();
+    }
+  });
+});
+
     new Sortable(listContainer, {
       group: "shared",
       animation: 150,
       draggable: ".card",
-      filter: "h1, .add-card, .listDelBtn, .listEditBtn",
+      filter: "h1, .add-card, .listDelBtn, .listEditBtn, .editBtn, .delBtn",
       ghostClass: "ghost",
       chosenClass: "chosen",
       onEnd: syncBoard
