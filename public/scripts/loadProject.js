@@ -120,37 +120,7 @@ function renderFullBoard() {
   
   });
 
-    editBtn.addEventListener("click", () => {
-  const currentText = card.querySelector("p")?.textContent || "";
-
-  Swal.fire({
-    title: 'Edit Card',
-    input: 'text',
-    inputValue: currentText,
-    showCancelButton: true,
-    confirmButtonColor: '#2c3e50',
-    cancelButtonColor: '#aaa',
-    confirmButtonText: 'Update'
-  }).then((result) => {
-    if (result.isConfirmed && result.value.trim()) {
-      const newText = result.value.trim();
-
-      // Update DOM
-      card.querySelector("p").textContent = newText;
-
-      // Get correct list using outer list variable
-      const listId = listContainer.id;
-      const list = boardData.lists.find(l => l.id === listId);
-      if (list) {
-        const cardIndex = list.cards.indexOf(currentText);
-        if (cardIndex !== -1) {
-          list.cards[cardIndex] = newText;
-          syncBoard();
-        }
-      }
-    }
-  });
-});
+    
 
     }
       
