@@ -495,6 +495,17 @@ function goBack(){
   history.back();
 }
 
+document.getElementById("copyInvite").addEventListener("click", () => {
+  const projectId = localStorage.getItem("projectId");
+  if (!projectId) return alert("No project selected.");
+
+  const link = `${window.location.origin}/invite?project=${projectId}`;
+  navigator.clipboard.writeText(link)
+    .then(() => alert("Invite link copied!"))
+    .catch(() => alert("Failed to copy link."));
+});
+
+
 
 
 function syncBoard() {
