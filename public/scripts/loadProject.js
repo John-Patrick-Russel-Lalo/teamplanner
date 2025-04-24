@@ -73,56 +73,89 @@ function renderFullBoard() {
     listContainer.appendChild(listTitle);
 
     
-  
-
     list.cards.forEach((cardText) => {
-      const card = document.createElement("div");
-      card.classList.add("card");
+  const card = document.createElement("div");
+  card.classList.add("card");
 
-      const cardP = document.createElement("p");
-      cardP.textContent = cardText;
+  const cardP = document.createElement("p");
+  cardP.textContent = cardText;
 
-      const delBtn = document.createElement("button");
-      const editBtn = document.createElement("button");
+  const delBtn = document.createElement("button");
+  const editBtn = document.createElement("button");
 
-      card.appendChild(cardP);
+  card.appendChild(cardP);
 
-      delBtn.classList.add("delBtn");
-      editBtn.classList.add("editBtn");
+  delBtn.classList.add("delBtn");
+  editBtn.classList.add("editBtn");
+
+  delBtn.textContent = "Delete";
+  editBtn.textContent = "Edit";
+
+  card.appendChild(editBtn);
+  card.appendChild(delBtn);
+
+  delBtn.addEventListener("click", () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action is irreversible!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      customClass: {
+        confirmButton: 'confirmBtn',
+        cancelButton: 'cancelBtn'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        card.remove();
+        syncBoard();
+        Swal.fire({
+          title: "Successfully Deleted",
+          confirmButtonColor: "#2c3e50"
+        });
+      }
+    });
+  });
+
+  editBtn.addEventListener("click", () => {
+    const currentText = card.querySelector("p")?.textContent || "";
+
+    Swal.fire({
+      title: 'Edit Card',
+      input: 'text',
+      inputValue: currentText,
+      showCancelButton: true,
+      confirmButtonColor: '#2c3e50',
+      cancelButtonColor: '#aaa',
+      confirmButtonText: 'Update'
+    }).then((result) => {
+      if (result.isConfirmed && result.value.trim()) {
+        const newText = result.value.trim();
+
+        card.querySelector("p").textContent = newText;
+
+        const listId = listContainer.id;
+        const list = boardData.lists.find(l => l.id === listId);
+        if (list) {
+          const cardIndex = list.cards.indexOf(currentText);
+          if (cardIndex !== -1) {
+            list.cards[cardIndex] = newText;
+            syncBoard();
+          }
+        }
+      }
+    });
+  });
+
+  listContainer.appendChild(card); // ← 
+}); // ← 
     
-      delBtn.textContent = "Delete";
-      editBtn.textContent = "Edit";
-
-      card.appendChild(editBtn);
-      card.appendChild(delBtn);
-
-      delBtn.addEventListener("click", () => {
-        Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action is irreversible!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      customClass: {
-        confirmButton: 'confirmBtn',
-        cancelButton: 'cancelBtn'
-      }
-    }).then((result) => {
-      if(result.isConfirmed){
-        card.remove();
-        syncBoard();
-        Swal.fire({
-          title: "Successfully Deleted",
-          confirmButtonColor: "#2c3e50"
-        })
-      }
-    })
-  
-  });
 
     
 
-    }
+    
+
+    
       
 
     const addCardButton = document.createElement("button");
