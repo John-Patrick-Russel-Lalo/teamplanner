@@ -28,6 +28,7 @@ let text;
 // Load project from API
 async function loadProject() {
   if (!projectId || !userId) {
+    
     Swal.fire({
       title: "Missing projectId or userId",
       confirmButtonColor: "#2c3e50"
@@ -36,6 +37,7 @@ async function loadProject() {
       title: "Missing projectId or userId",
       confirmButtonColor: "#2c3e50"
     });
+    window.location.href = "/";
   }
 
   console.log("Loading project with:", projectId, userId);
