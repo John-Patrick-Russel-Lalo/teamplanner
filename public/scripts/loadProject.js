@@ -494,7 +494,7 @@ function addCard(listId) {
 }
 
 function goBack(){
-  history.back();
+  window.location.href = "/dashboard.html";
 }
 
 document.getElementById("copyInvite").addEventListener("click", () => {
