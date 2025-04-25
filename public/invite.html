@@ -53,7 +53,7 @@
           if (data.success) {
             alert("You joined the project!");
             localStorage.setItem("projectId", projectId);
-            window.location.href = "/board";
+            window.location.href = "/loadProject.html";
           } else {
             alert(data.error || "Could not join the project.");
           }
