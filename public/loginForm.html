@@ -24,6 +24,12 @@
           document.getElementById('g_id_signin'),
           { theme: 'outline', size: 'large' }
         );
+
+        if(localhost.getItem("userId")){
+          window.location.href = '/dashboard.html';
+        } else{
+          console.log("not yet signed in");
+        }
       } catch (err) {
         console.error('Failed to load Google Sign-In:', err);
       }
@@ -40,7 +46,6 @@
   .then(res => res.json())
   .then(data => {
     console.log('Saved user:', data);
-    alert(`Welcome, ${data.name}!`);
     localStorage.setItem("userId", data.id); // Set userId from DB
     window.location.href = '/dashboard.html';
   })
