@@ -24,6 +24,10 @@
     {
       "src": "/",
       "dest": "/public/index.html"
+    },
+    {
+      "src": "/loginForm",
+      "dest": "/public/loginForm.html"
     }
   ]
 }
