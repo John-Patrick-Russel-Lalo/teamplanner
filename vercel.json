@@ -4,28 +4,10 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/dashboard",
-      "destination": "/public/dashboard.html"
     },
     {
-      "source": "/login",
-      "destination": "/public/loginForm.html"
-    },
-    {
-      "source": "/invite",
-      "destination": "/public/invite.html"
-    },
-    {
-      "source": "/loadProject",
-      "destination": "/public/loadProject.html"
-    },
-    {
-      "source": "/",
-      "destination": "/public/index.html"
+      "src": "/(.*)",
+      "dest": "/public/$1.html"
     }
   ]
 }
