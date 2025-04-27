@@ -25,7 +25,7 @@
           { theme: 'outline', size: 'large' }
         );
 
-        if(localhost.getItem("userId")){
+        if(localStorage.getItem("userId")){
           window.location.href = '/dashboard.html';
         } else{
           console.log("not yet signed in");
