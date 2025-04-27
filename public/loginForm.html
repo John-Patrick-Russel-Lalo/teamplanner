@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="styles/loginstyle.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
+
+    if(localStorage.getItem("userId")){
+        window.location.href = '/dashboard.html';
+    } else{
+        console.log("not yet signed in");
+    }
     async function loadGoogleSignIn() {
       try {
         // Fetch client ID from Vercel environment
@@ -25,11 +31,7 @@
           { theme: 'outline', size: 'large' }
         );
 
-        if(localStorage.getItem("userId")){
-          window.location.href = '/dashboard.html';
-        } else{
-          console.log("not yet signed in");
-        }
+        
       } catch (err) {
         console.error('Failed to load Google Sign-In:', err);
       }
