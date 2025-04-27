@@ -4,6 +4,26 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/public/dashboard.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/public/loginForm.html"
+    },
+    {
+      "src": "/invite",
+      "dest": "/public/invite.html"
+    },
+    {
+      "src": "/loadProject",
+      "dest": "/public/loadProject.html"
+    },
+    {
+      "src": "/",
+      "dest": "/public/index.html"
     }
   ]
 }
